@@ -14,6 +14,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.registry.Registry;
 
+import java.awt.*;
 import java.text.DecimalFormat;
 
 public class TooltipEventHandler {
@@ -55,9 +56,8 @@ public class TooltipEventHandler {
                 int maxDamage = itemStack.getMaxDamage();
                 int currentDamage = maxDamage - itemStack.getDamage();
                 if (maxDamage > 0) {
-                    list.add(new TranslatableText("tooltip.more_tooltips.durability")
-                            .append(new LiteralText(" " + currentDamage + "/" + maxDamage))
-                            .fillStyle(DARK_GRAY));
+                    list.add(1, new TranslatableText("tooltip.more_tooltips.durability")
+                            .append(new LiteralText(" " + currentDamage + "/" + maxDamage)));
                 }
             }
 
