@@ -15,6 +15,7 @@
   "text.autoconfig.more_tooltips.option.TranslationKey": "語言文件ID",
   "text.autoconfig.more_tooltips.option.RepairCost": "修復所需經驗",
   "text.autoconfig.more_tooltips.option.Enchantability": "附魔性",
+  "text.autoconfig.more_tooltips.option.MiningLevel": "挖掘等級",
 
   "_comment": "Tooltips",
   "tooltip.more_tooltips.burnTime": "燃燒時間:",
@@ -27,5 +28,6 @@
   "tooltip.more_tooltips.registryName": "ID:",
   "tooltip.more_tooltips.translationKey": "語言文件ID:",
   "tooltip.more_tooltips.RepairCost": "修復需要經驗:",
-  "tooltip.more_tooltips.Enchantability": "附魔性:"
+  "tooltip.more_tooltips.Enchantability": "附魔性:",
+  "tooltip.more_tooltips.MiningLevel": "挖掘等級:"
 }

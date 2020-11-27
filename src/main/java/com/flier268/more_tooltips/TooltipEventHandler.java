@@ -5,6 +5,9 @@ import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.FoodComponent;
+import net.minecraft.item.Item;
+import net.minecraft.item.PickaxeItem;
+import net.minecraft.item.ToolItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.text.LiteralText;
@@ -14,6 +17,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.registry.Registry;
 
+import javax.tools.Tool;
 import java.awt.*;
 import java.text.DecimalFormat;
 
@@ -37,10 +41,11 @@ public class TooltipEventHandler {
             if (itemStack.isEmpty()) {
                 return;
             }
+            Item item = itemStack.getItem();
             // Tooltip - Burn Time
             if (config.BurnTime.isShown(isShiftDown, config.debug)) {
                 if (ItemTags.getTagGroup().getTags().size() > 0) {
-                    int burnTime = AbstractFurnaceBlockEntity.createFuelTimeMap().getOrDefault(itemStack.getItem(), 0);
+                    int burnTime = AbstractFurnaceBlockEntity.createFuelTimeMap().getOrDefault(item, 0);
                     if (burnTime > 0) {
                         list.add(new TranslatableText("tooltip.more_tooltips.burnTime")
                                 .append(new LiteralText(" " + decimalFormat.format(burnTime) + " "))
@@ -49,7 +54,15 @@ public class TooltipEventHandler {
                     }
                 }
             }
-
+            
+            // Tooltip - MiningLevel
+            if (config.MiningLevel.isShown(isShiftDown, config.debug)) {
+                if(item instanceof ToolItem) {
+                    int miningLevel = ((ToolItem) item).getMaterial().getMiningLevel();
+                    list.add(1, new TranslatableText("tooltip.more_tooltips.MiningLevel")
+                            .append(new LiteralText(" " + miningLevel)));
+                }
+            }
 
             // Tooltip - Durability
             if (config.Durability.isShown(isShiftDown, config.debug)) {
@@ -64,7 +77,7 @@ public class TooltipEventHandler {
             // Tooltip - Hunger / Saturation
             if (config.Food.isShown(isShiftDown, config.debug)) {
                 if (itemStack.isFood()) {
-                    FoodComponent foodComponent = itemStack.getItem().getFoodComponent();
+                    FoodComponent foodComponent = item.getFoodComponent();
                     int healVal = foodComponent.getHunger();
                     float satVal = healVal * (foodComponent.getSaturationModifier()) * 2;
                     list.add(new TranslatableText("tooltip.more_tooltips.hunger")
@@ -89,7 +102,7 @@ public class TooltipEventHandler {
             // Tooltip - Registry Name
             if (config.ID.isShown(isShiftDown, config.debug)) {
                 list.add(new TranslatableText("tooltip.more_tooltips.registryName")
-                        .append(new LiteralText(" " + Registry.ITEM.getId(itemStack.getItem()).toString()))
+                        .append(new LiteralText(" " + Registry.ITEM.getId(item).toString()))
                         .fillStyle(DARK_GRAY));
             }
 
@@ -121,7 +134,7 @@ public class TooltipEventHandler {
             if (config.Enchantability.isShown(isShiftDown, config.debug)) {
                 if (itemStack.isEnchantable()) {
                     list.add(new TranslatableText("tooltip.more_tooltips.Enchantability")
-                            .append(new LiteralText(" " + itemStack.getItem().getEnchantability()))
+                            .append(new LiteralText(" " + item.getEnchantability()))
                             .fillStyle(DARK_GRAY));
                 }
             }

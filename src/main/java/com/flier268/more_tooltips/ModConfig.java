@@ -18,6 +18,7 @@ public class ModConfig implements ConfigData {
     public Options TranslationKey = Options.onDebug;
     public Options RepairCost = Options.onShift;
     public Options Enchantability = Options.onShift;
+    public Options MiningLevel = Options.show;
 
     public enum Options {
         hide,
