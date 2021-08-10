@@ -1,14 +1,13 @@
 package com.flier268.more_tooltips;
 
-import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
+import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
-import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ToolItem;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
@@ -17,8 +16,6 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.registry.Registry;
 
-import javax.tools.Tool;
-import java.awt.*;
 import java.text.DecimalFormat;
 
 public class TooltipEventHandler {
@@ -91,7 +88,7 @@ public class TooltipEventHandler {
 
             // Tooltip - NBT Data
             if (config.NBT.isShown(isShiftDown, config.debug)) {
-                CompoundTag nbtData = itemStack.getTag();
+                NbtCompound nbtData = itemStack.getNbt();
                 if (nbtData != null) {
                     list.add(new TranslatableText("tooltip.more_tooltips.nbtTagData")
                             .append(new LiteralText(" " + nbtData))
