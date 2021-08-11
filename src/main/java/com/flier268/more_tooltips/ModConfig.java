@@ -1,7 +1,7 @@
 package com.flier268.more_tooltips;
 
-import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
+import me.shedaniel.autoconfig.ConfigData;
+import me.shedaniel.autoconfig.annotation.Config;
 
 @Config(name = MoreTooltips.MOD_ID)
 public class ModConfig implements ConfigData {
