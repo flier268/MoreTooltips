@@ -1,8 +1,7 @@
 {
   "required": false,
-  "minVersion": "0.8",
   "package": "com.flier268.more_tooltips.mixin",
-  "compatibilityLevel": "JAVA_16",
+  "compatibilityLevel": "JAVA_17",
   "mixins": [
 
   ],
