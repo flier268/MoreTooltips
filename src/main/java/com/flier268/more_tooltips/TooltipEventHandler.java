@@ -17,8 +17,11 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.registry.Registry;
 
 import java.text.DecimalFormat;
+import java.util.Map;
 
 public class TooltipEventHandler {
+    private static Map<Item, Integer> FuelTimeMap = null;
+
     public static void addMoreTooltip() {
         ItemTooltipCallback.EVENT.register((itemStack, tooltipContext, list) -> {
             ModConfig config = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
@@ -42,7 +45,9 @@ public class TooltipEventHandler {
             // Tooltip - Burn Time
             if (config.BurnTime.isShown(isShiftDown, config.debug)) {
                 if (ItemTags.getTagGroup().getTags().size() > 0) {
-                    int burnTime = AbstractFurnaceBlockEntity.createFuelTimeMap().getOrDefault(item, 0);
+                    if (TooltipEventHandler.FuelTimeMap == null)
+                        TooltipEventHandler.FuelTimeMap = AbstractFurnaceBlockEntity.createFuelTimeMap();
+                    int burnTime = TooltipEventHandler.FuelTimeMap.getOrDefault(item, 0);
                     if (burnTime > 0) {
                         list.add(new TranslatableText("tooltip.more_tooltips.burnTime")
                                 .append(new LiteralText(" " + decimalFormat.format(burnTime) + " "))
@@ -51,10 +56,10 @@ public class TooltipEventHandler {
                     }
                 }
             }
-            
+
             // Tooltip - MiningLevel
             if (config.MiningLevel.isShown(isShiftDown, config.debug)) {
-                if(item instanceof ToolItem) {
+                if (item instanceof ToolItem) {
                     int miningLevel = ((ToolItem) item).getMaterial().getMiningLevel();
                     list.add(1, new TranslatableText("tooltip.more_tooltips.MiningLevel")
                             .append(new LiteralText(" " + miningLevel)));
@@ -135,7 +140,7 @@ public class TooltipEventHandler {
                             .fillStyle(DARK_GRAY));
                 }
             }
-            if(isShiftDown && config.debug)
+            if (isShiftDown && config.debug)
                 list.add(new LiteralText("Powered by flier268").fillStyle(AQUA));
         });
     }
