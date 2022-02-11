@@ -16,6 +16,8 @@
   "text.autoconfig.more_tooltips.option.RepairCost": "Exp Cost when repair",
   "text.autoconfig.more_tooltips.option.Enchantability": "Enchantability of tool",
   "text.autoconfig.more_tooltips.option.MiningLevel": "Mining Level of tool",
+  "text.autoconfig.more_tooltips.option.CompostingChance": "Composting chance",
+  "text.autoconfig.more_tooltips.option.LightLevel": "Light Level",
 
   "_comment": "Tooltips",
   "tooltip.more_tooltips.burnTime": "Burn Time:",
@@ -29,5 +31,7 @@
   "tooltip.more_tooltips.translationKey": "Translation Key:",
   "tooltip.more_tooltips.RepairCost": "Repair Cost:",
   "tooltip.more_tooltips.Enchantability": "Enchantability:",
-  "tooltip.more_tooltips.MiningLevel": "Mining Level:"
+  "tooltip.more_tooltips.MiningLevel": "Mining Level:",
+  "tooltip.more_tooltips.CompostingChance": "Composting chance:",
+  "tooltip.more_tooltips.LightLevel": "Light Level:"
 }
