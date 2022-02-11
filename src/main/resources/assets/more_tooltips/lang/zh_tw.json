@@ -16,6 +16,8 @@
   "text.autoconfig.more_tooltips.option.RepairCost": "修復所需經驗",
   "text.autoconfig.more_tooltips.option.Enchantability": "附魔性",
   "text.autoconfig.more_tooltips.option.MiningLevel": "挖掘等級",
+  "text.autoconfig.more_tooltips.option.CompostingChance": "堆肥機率",
+  "text.autoconfig.more_tooltips.option.LightLevel": "亮度",
 
   "_comment": "Tooltips",
   "tooltip.more_tooltips.burnTime": "燃燒時間:",
@@ -29,5 +31,7 @@
   "tooltip.more_tooltips.translationKey": "語言文件ID:",
   "tooltip.more_tooltips.RepairCost": "修復需要經驗:",
   "tooltip.more_tooltips.Enchantability": "附魔性:",
-  "tooltip.more_tooltips.MiningLevel": "挖掘等級:"
+  "tooltip.more_tooltips.MiningLevel": "挖掘等級:",
+  "tooltip.more_tooltips.CompostingChance": "堆肥機率:",
+  "tooltip.more_tooltips.LightLevel": "亮度:"
 }

@@ -1,7 +1,11 @@
 package com.flier268.more_tooltips;
 
+import java.text.DecimalFormat;
+import java.util.Map;
+
 import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
+import net.minecraft.block.ComposterBlock;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.FoodComponent;
@@ -14,10 +18,8 @@ import net.minecraft.text.Style;
 import net.minecraft.text.TextColor;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-
-import java.text.DecimalFormat;
-import java.util.Map;
 
 public class TooltipEventHandler {
     private static Map<Item, Integer> FuelTimeMap = null;
@@ -42,6 +44,8 @@ public class TooltipEventHandler {
                 return;
             }
             Item item = itemStack.getItem();
+            Identifier itemId = Registry.ITEM.getKey(item).get().getValue();
+
             // Tooltip - Burn Time
             if (config.BurnTime.isShown(isShiftDown, config.debug)) {
                 if (ItemTags.getTagGroup().getTags().size() > 0) {
@@ -140,6 +144,27 @@ public class TooltipEventHandler {
                             .fillStyle(DARK_GRAY));
                 }
             }
+
+            // Tooltip - Light level
+            if (config.LightLevel.isShown(isShiftDown, config.debug)) {
+                int luminance = Registry.BLOCK.get(itemId).getDefaultState().getLuminance();
+                if (luminance > 0) {
+                    list.add(new TranslatableText("tooltip.more_tooltips.LightLevel")
+                            .append(new LiteralText(" " + luminance))
+                            .fillStyle(DARK_GRAY));
+                }
+            }
+
+            // Tooltip - Composting chance
+            if (config.CompostingChance.isShown(isShiftDown, config.debug)) {
+                float chance = ComposterBlock.ITEM_TO_LEVEL_INCREASE_CHANCE.getFloat(item);
+                if (chance > 0.0) {
+                    list.add(new TranslatableText("tooltip.more_tooltips.CompostingChance")
+                            .append(new LiteralText(" " + String.format("%.0f%%", chance * 100)))
+                            .fillStyle(DARK_GRAY));
+                }
+            }
+
             if (isShiftDown && config.debug)
                 list.add(new LiteralText("Powered by flier268").fillStyle(AQUA));
         });
