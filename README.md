@@ -12,6 +12,8 @@ Show item's info when mouse hover
 * Registry Name Tooltip
 * Exp Cost when repair
 * Enchantability of tool
+* Light level
+* Composting chance
 * Configable
 
 ## Screenshot
