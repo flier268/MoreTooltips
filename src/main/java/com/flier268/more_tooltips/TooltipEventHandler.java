@@ -1,20 +1,26 @@
 package com.flier268.more_tooltips;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.block.ComposterBlock;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ToolItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.tag.ItemTags;
+import net.minecraft.text.BaseText;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
+import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
@@ -23,6 +29,45 @@ import net.minecraft.util.registry.Registry;
 
 public class TooltipEventHandler {
     private static Map<Item, Integer> FuelTimeMap = null;
+
+    private static List<Text> splitToolTip(TextRenderer renderer, String text, int maxWidth) {
+        return splitToolTip(renderer, text, maxWidth, null);
+    }
+
+    private static List<Text> splitToolTip(TextRenderer renderer, String text, int maxWidth, Style style) {
+        List<Text> output = new ArrayList<Text>();
+        int width = renderer.getWidth(text);
+        if (width > maxWidth) {
+            int skipEnd = 0;
+            int added = 0;
+            while (true) {
+                int lastSpaceIndex = text.lastIndexOf(" ", text.length() - skipEnd - 1);
+                if (added <= lastSpaceIndex) {
+                    String textPart = text.substring(added, lastSpaceIndex);
+                    int textPartWidth = renderer.getWidth(textPart);
+                    if (textPartWidth <= maxWidth || textPart.indexOf(" ") == -1) {
+                        output.add(TrySetStyle(new LiteralText(textPart), style));
+                        added += textPart.length() + 1;
+                        skipEnd = 0;
+                    } else {
+                        skipEnd = text.length() - lastSpaceIndex;
+                    }
+                } else {
+                    output.add(TrySetStyle(new LiteralText(text.substring(added, text.length())), style));
+                    break;
+                }
+            }
+        } else {
+            output.add(TrySetStyle(new LiteralText(text), style));
+        }
+        return output;
+    }
+
+    private static Text TrySetStyle(BaseText text, Style style) {
+        if (style != null)
+            return text.setStyle(style);
+        return text;
+    }
 
     public static void addMoreTooltip() {
         ItemTooltipCallback.EVENT.register((itemStack, tooltipContext, list) -> {
@@ -46,6 +91,9 @@ public class TooltipEventHandler {
             Item item = itemStack.getItem();
             Identifier itemId = Registry.ITEM.getKey(item).get().getValue();
 
+            var clientInstance = MinecraftClient.getInstance();
+            int threshold = clientInstance.getWindow().getScaledWidth() / 2;
+
             // Tooltip - Burn Time
             if (config.BurnTime.isShown(isShiftDown, config.debug)) {
                 if (ItemTags.getTagGroup().getTags().size() > 0) {
@@ -53,10 +101,11 @@ public class TooltipEventHandler {
                         TooltipEventHandler.FuelTimeMap = AbstractFurnaceBlockEntity.createFuelTimeMap();
                     int burnTime = TooltipEventHandler.FuelTimeMap.getOrDefault(item, 0);
                     if (burnTime > 0) {
-                        list.add(new TranslatableText("tooltip.more_tooltips.burnTime")
+                        String string = new TranslatableText("tooltip.more_tooltips.burnTime")
                                 .append(new LiteralText(" " + decimalFormat.format(burnTime) + " "))
                                 .append(new TranslatableText("tooltip.more_tooltips.burnTime.suffix"))
-                                .fillStyle(DARK_GRAY));
+                                .getString();
+                        list.addAll(splitToolTip(clientInstance.textRenderer, string, threshold, DARK_GRAY));
                     }
                 }
             }
@@ -65,8 +114,10 @@ public class TooltipEventHandler {
             if (config.MiningLevel.isShown(isShiftDown, config.debug)) {
                 if (item instanceof ToolItem) {
                     int miningLevel = ((ToolItem) item).getMaterial().getMiningLevel();
-                    list.add(1, new TranslatableText("tooltip.more_tooltips.MiningLevel")
-                            .append(new LiteralText(" " + miningLevel)));
+                    String string = new TranslatableText("tooltip.more_tooltips.MiningLevel")
+                            .append(new LiteralText(" " + miningLevel))
+                            .getString();
+                    list.addAll(splitToolTip(clientInstance.textRenderer, string, threshold));
                 }
             }
 
@@ -75,8 +126,10 @@ public class TooltipEventHandler {
                 int maxDamage = itemStack.getMaxDamage();
                 int currentDamage = maxDamage - itemStack.getDamage();
                 if (maxDamage > 0) {
-                    list.add(1, new TranslatableText("tooltip.more_tooltips.durability")
-                            .append(new LiteralText(" " + currentDamage + "/" + maxDamage)));
+                    String string = new TranslatableText("tooltip.more_tooltips.durability")
+                            .append(new LiteralText(" " + currentDamage + "/" + maxDamage))
+                            .getString();
+                    list.addAll(splitToolTip(clientInstance.textRenderer, string, threshold));
                 }
             }
 
@@ -86,12 +139,12 @@ public class TooltipEventHandler {
                     FoodComponent foodComponent = item.getFoodComponent();
                     int healVal = foodComponent.getHunger();
                     float satVal = healVal * (foodComponent.getSaturationModifier()) * 2;
-                    list.add(new TranslatableText("tooltip.more_tooltips.hunger")
+                    String string = new TranslatableText("tooltip.more_tooltips.hunger")
                             .append(new LiteralText(" " + healVal + " "))
                             .append(new TranslatableText("tooltip.more_tooltips.saturation"))
                             .append(new LiteralText(" " + decimalFormat.format(satVal)))
-                            .fillStyle(DARK_GRAY));
-
+                            .getString();
+                    list.addAll(splitToolTip(clientInstance.textRenderer, string, threshold, DARK_GRAY));
                 }
             }
 
@@ -99,49 +152,55 @@ public class TooltipEventHandler {
             if (config.NBT.isShown(isShiftDown, config.debug)) {
                 NbtCompound nbtData = itemStack.getNbt();
                 if (nbtData != null) {
-                    list.add(new TranslatableText("tooltip.more_tooltips.nbtTagData")
+                    String string = new TranslatableText("tooltip.more_tooltips.nbtTagData")
                             .append(new LiteralText(" " + nbtData))
-                            .fillStyle(DARK_GRAY));
+                            .getString();
+                    list.addAll(splitToolTip(clientInstance.textRenderer, string, threshold, DARK_GRAY));
                 }
             }
 
             // Tooltip - Registry Name
             if (config.ID.isShown(isShiftDown, config.debug)) {
-                list.add(new TranslatableText("tooltip.more_tooltips.registryName")
+                String string = new TranslatableText("tooltip.more_tooltips.registryName")
                         .append(new LiteralText(" " + Registry.ITEM.getId(item).toString()))
-                        .fillStyle(DARK_GRAY));
+                        .getString();
+                list.addAll(splitToolTip(clientInstance.textRenderer, string, threshold, DARK_GRAY));
             }
 
             // Tooltip - Max Stack Size
             if (config.MaxStackSize.isShown(isShiftDown, config.debug)) {
                 if (itemStack.isStackable()) {
-                    list.add(new TranslatableText("tooltip.more_tooltips.maxStackSize")
+                    String string = new TranslatableText("tooltip.more_tooltips.maxStackSize")
                             .append(new LiteralText(" " + itemStack.getMaxCount()))
-                            .fillStyle(DARK_GRAY));
+                           .getString();
+                    list.addAll(splitToolTip(clientInstance.textRenderer, string, threshold, DARK_GRAY));
                 }
             }
 
             // Tooltip - Translation Key
             if (config.TranslationKey.isShown(isShiftDown, config.debug)) {
-                list.add(new TranslatableText("tooltip.more_tooltips.translationKey")
+                String string = new TranslatableText("tooltip.more_tooltips.translationKey")
                         .append(new LiteralText(" " + itemStack.getTranslationKey()))
-                        .fillStyle(DARK_GRAY));
+                        .getString();
+                list.addAll(splitToolTip(clientInstance.textRenderer, string, threshold, DARK_GRAY));
             }
 
             // Tooltip - Repair Cost
             if (config.RepairCost.isShown(isShiftDown, config.debug)) {
                 if (itemStack.isDamageable()) {
-                    list.add(new TranslatableText("tooltip.more_tooltips.RepairCost")
+                    String string = new TranslatableText("tooltip.more_tooltips.RepairCost")
                             .append(new LiteralText(" " + itemStack.getRepairCost()))
-                            .fillStyle(DARK_GRAY));
+                            .getString();
+                    list.addAll(splitToolTip(clientInstance.textRenderer, string, threshold, DARK_GRAY));
                 }
             }
             // Tooltip - Enchantability
             if (config.Enchantability.isShown(isShiftDown, config.debug)) {
                 if (itemStack.isEnchantable()) {
-                    list.add(new TranslatableText("tooltip.more_tooltips.Enchantability")
+                    String string = new TranslatableText("tooltip.more_tooltips.Enchantability")
                             .append(new LiteralText(" " + item.getEnchantability()))
-                            .fillStyle(DARK_GRAY));
+                            .getString();
+                    list.addAll(splitToolTip(clientInstance.textRenderer, string, threshold, DARK_GRAY));
                 }
             }
 
@@ -149,9 +208,10 @@ public class TooltipEventHandler {
             if (config.LightLevel.isShown(isShiftDown, config.debug)) {
                 int luminance = Registry.BLOCK.get(itemId).getDefaultState().getLuminance();
                 if (luminance > 0) {
-                    list.add(new TranslatableText("tooltip.more_tooltips.LightLevel")
+                    String string = new TranslatableText("tooltip.more_tooltips.LightLevel")
                             .append(new LiteralText(" " + luminance))
-                            .fillStyle(DARK_GRAY));
+                            .getString();
+                    list.addAll(splitToolTip(clientInstance.textRenderer, string, threshold, DARK_GRAY));
                 }
             }
 
@@ -159,14 +219,17 @@ public class TooltipEventHandler {
             if (config.CompostingChance.isShown(isShiftDown, config.debug)) {
                 float chance = ComposterBlock.ITEM_TO_LEVEL_INCREASE_CHANCE.getFloat(item);
                 if (chance > 0.0) {
-                    list.add(new TranslatableText("tooltip.more_tooltips.CompostingChance")
+                    String string = new TranslatableText("tooltip.more_tooltips.CompostingChance")
                             .append(new LiteralText(" " + String.format("%.0f%%", chance * 100)))
-                            .fillStyle(DARK_GRAY));
+                            .getString();
+                    list.addAll(splitToolTip(clientInstance.textRenderer, string, threshold, DARK_GRAY));
                 }
             }
 
-            if (isShiftDown && config.debug)
-                list.add(new LiteralText("Powered by flier268").fillStyle(AQUA));
+            if (isShiftDown && config.debug) {
+                String string = new LiteralText("Powered by flier268").getString();
+                list.addAll(splitToolTip(clientInstance.textRenderer, string, threshold, AQUA));
+            }
         });
     }
 }
