@@ -16,6 +16,7 @@
   "text.autoconfig.more_tooltips.option.RepairCost": "Exp Cost when repair",
   "text.autoconfig.more_tooltips.option.Enchantability": "Enchantability of tool",
   "text.autoconfig.more_tooltips.option.MiningLevel": "Mining Level of tool",
+  "text.autoconfig.more_tooltips.option.MiningSpeed": "Mining Speed of tool",
   "text.autoconfig.more_tooltips.option.CompostingChance": "Composting chance",
   "text.autoconfig.more_tooltips.option.LightLevel": "Light Level",
 
@@ -30,6 +31,7 @@
   "tooltip.more_tooltips.RepairCost": "Repair Cost: %d",
   "tooltip.more_tooltips.Enchantability": "Enchantability: %d",
   "tooltip.more_tooltips.MiningLevel": "Mining Level: %d",
+  "tooltip.more_tooltips.MiningSpeed": "Mining Speed: %s",
   "tooltip.more_tooltips.CompostingChance": "Composting chance: %s%%",
   "tooltip.more_tooltips.LightLevel": "Light Level: %d"
 }

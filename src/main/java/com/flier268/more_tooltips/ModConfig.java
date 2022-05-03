@@ -19,6 +19,7 @@ public class ModConfig implements ConfigData {
     public Options RepairCost = Options.onShift;
     public Options Enchantability = Options.onShift;
     public Options MiningLevel = Options.show;
+    public Options MiningSpeed = Options.show;
     public Options LightLevel = Options.show;
     public Options CompostingChance = Options.show;
 

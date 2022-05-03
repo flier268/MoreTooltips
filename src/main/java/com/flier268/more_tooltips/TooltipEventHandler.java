@@ -28,6 +28,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class TooltipEventHandler {
+    private static DecimalFormat Formatter = new DecimalFormat("###.#");
+
     private static List<Text> splitToolTip(TextRenderer renderer, String text, int maxWidth) {
         return splitToolTip(renderer, text, maxWidth, null);
     }
@@ -75,9 +77,6 @@ public class TooltipEventHandler {
 
             boolean isShiftDown = Screen.hasShiftDown();
 
-            DecimalFormat decimalFormat = new DecimalFormat("#.##");
-            decimalFormat.setGroupingUsed(true);
-            decimalFormat.setGroupingSize(3);
             Style DARK_GRAY = Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.DARK_GRAY));
             Style AQUA = Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.AQUA));
             // Retrieve the ItemStack and Item
@@ -113,6 +112,16 @@ public class TooltipEventHandler {
                 }
             }
 
+            // Tooltip - MiningSpeed
+            if (config.MiningSpeed.isShown(isShiftDown, config.debug)) {
+                if (item instanceof ToolItem) {
+                    float miningSpeed = ((ToolItem) item).getMaterial().getMiningSpeedMultiplier();
+                    String string = new TranslatableText("tooltip.more_tooltips.MiningSpeed",
+                            Formatter.format(miningSpeed)).getString();
+                    list.addAll(splitToolTip(clientInstance.textRenderer, string, threshold));
+                }
+            }
+
             // Tooltip - Durability
             if (config.Durability.isShown(isShiftDown, config.debug)) {
                 int maxDamage = itemStack.getMaxDamage();
@@ -131,7 +140,7 @@ public class TooltipEventHandler {
                     int healVal = foodComponent.getHunger();
                     float satVal = healVal * (foodComponent.getSaturationModifier()) * 2;
                     String string = new TranslatableText("tooltip.more_tooltips.hunger", healVal,
-                            new DecimalFormat("###.#").format(satVal)).getString();
+                            Formatter.format(satVal)).getString();
                     list.addAll(splitToolTip(clientInstance.textRenderer, string, threshold, DARK_GRAY));
                 }
             }
@@ -201,7 +210,7 @@ public class TooltipEventHandler {
 
                 if (chance > 0.0) {
                     String string = new TranslatableText("tooltip.more_tooltips.CompostingChance",
-                            new DecimalFormat("###.#").format(chance * 100)).getString();
+                            Formatter.format(chance * 100)).getString();
                     list.addAll(splitToolTip(clientInstance.textRenderer, string, threshold, DARK_GRAY));
                 }
             }
