@@ -3,12 +3,11 @@ package com.flier268.more_tooltips;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
+import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.block.ComposterBlock;
-import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
@@ -16,7 +15,6 @@ import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ToolItem;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.tag.ItemTags;
 import net.minecraft.text.BaseText;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
@@ -28,8 +26,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class TooltipEventHandler {
-    private static Map<Item, Integer> FuelTimeMap = null;
-
     private static List<Text> splitToolTip(TextRenderer renderer, String text, int maxWidth) {
         return splitToolTip(renderer, text, maxWidth, null);
     }
@@ -96,14 +92,10 @@ public class TooltipEventHandler {
 
             // Tooltip - Burn Time
             if (config.BurnTime.isShown(isShiftDown, config.debug)) {
-                if (ItemTags.getTagGroup().getTags().size() > 0) {
-                    if (TooltipEventHandler.FuelTimeMap == null)
-                        TooltipEventHandler.FuelTimeMap = AbstractFurnaceBlockEntity.createFuelTimeMap();
-                    int burnTime = TooltipEventHandler.FuelTimeMap.getOrDefault(item, 0);
-                    if (burnTime > 0) {
-                        String string = new TranslatableText("tooltip.more_tooltips.burnTime", burnTime).getString();
-                        list.addAll(splitToolTip(clientInstance.textRenderer, string, threshold, DARK_GRAY));
-                    }
+                Integer burnTime = FuelRegistry.INSTANCE.get(item);
+                if (burnTime != null && burnTime > 0) {
+                    String string = new TranslatableText("tooltip.more_tooltips.burnTime", burnTime).getString();
+                    list.addAll(splitToolTip(clientInstance.textRenderer, string, threshold, DARK_GRAY));
                 }
             }
 
