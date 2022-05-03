@@ -10,7 +10,9 @@ import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.block.ComposterBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.screen.DownloadingTerrainScreen;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ToolItem;
@@ -89,6 +91,9 @@ public class TooltipEventHandler {
 
             var clientInstance = MinecraftClient.getInstance();
             int threshold = clientInstance.getWindow().getScaledWidth() / 2;
+            if (clientInstance.currentScreen == null || clientInstance.currentScreen instanceof TitleScreen
+                    || clientInstance.currentScreen instanceof DownloadingTerrainScreen)
+                return;
 
             // Tooltip - Burn Time
             if (config.BurnTime.isShown(isShiftDown, config.debug)) {
