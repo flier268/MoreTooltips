@@ -19,6 +19,7 @@
   "text.autoconfig.more_tooltips.option.MiningSpeed": "Mining Speed of tool",
   "text.autoconfig.more_tooltips.option.CompostingChance": "Composting chance",
   "text.autoconfig.more_tooltips.option.LightLevel": "Light Level",
+  "text.autoconfig.more_tooltips.option.TextMaxLength": "Max text length",
 
   "_comment": "Tooltips",
   "tooltip.more_tooltips.burnTime": "Burn Time: %d ticks",

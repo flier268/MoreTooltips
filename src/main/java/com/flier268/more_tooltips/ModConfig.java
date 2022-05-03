@@ -22,7 +22,7 @@ public class ModConfig implements ConfigData {
     public Options MiningSpeed = Options.show;
     public Options LightLevel = Options.show;
     public Options CompostingChance = Options.show;
-
+    public int TextMaxLength = 128;
     public enum Options {
         hide,
         show,

@@ -19,6 +19,7 @@
   "text.autoconfig.more_tooltips.option.MiningSpeed": "挖掘速度",
   "text.autoconfig.more_tooltips.option.CompostingChance": "堆肥機率",
   "text.autoconfig.more_tooltips.option.LightLevel": "亮度",
+  "text.autoconfig.more_tooltips.option.TextMaxLength": "最大文字長度",
 
   "_comment": "Tooltips",
   "tooltip.more_tooltips.burnTime": "燃燒時間: %d 刻",
